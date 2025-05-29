@@ -68,13 +68,13 @@ function Background() {
 }
 
 function RainEffect() {
-  const count = 2500; // Reduced from 5000 for better performance
+  const count = 1000; // Reduced from 2500 for better performance
   const positions = useMemo(() => {
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 50;
-      positions[i * 3 + 1] = Math.random() * 50;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+      positions[i * 3] = (Math.random() - 0.5) * 40;
+      positions[i * 3 + 1] = Math.random() * 40;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
     }
     return positions;
   }, []);
@@ -84,7 +84,7 @@ function RainEffect() {
     if (points && points instanceof THREE.Points) {
       const positions = points.geometry.attributes.position.array;
       for (let i = 0; i < positions.length; i += 3) {
-        positions[i + 1] -= 0.5;
+        positions[i + 1] -= 0.3; // Reduced speed
         if (positions[i + 1] < -10) {
           positions[i + 1] = 40;
         }
@@ -94,7 +94,7 @@ function RainEffect() {
   });
 
   return (
-    <Points name="rain" limit={2500}>
+    <Points name="rain" limit={1000}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -107,10 +107,11 @@ function RainEffect() {
       <PointMaterial
         transparent
         vertexColors
-        size={0.2} // Slightly larger to compensate for fewer particles
+        size={0.15}
         sizeAttenuation
         depthWrite={false}
         color="#aaddff"
+        opacity={0.6}
       />
     </Points>
   );
@@ -185,15 +186,15 @@ function LightningEffect() {
 function RealisticClouds() {
   const cloudRefs = useRef<(THREE.Group | null)[]>([]);
   const cloudConfigs = useMemo(() => {
-    return Array(12).fill(null).map((_, i) => ({ // Reduced from 20 to 12 clouds
+    return Array(6).fill(null).map((_, i) => ({ // Reduced from 12 to 6 clouds
       position: [
-        (Math.random() - 0.5) * 100,
-        20 + Math.random() * 30,
-        -50 - Math.random() * 50
+        (Math.random() - 0.5) * 80,
+        20 + Math.random() * 20,
+        -40 - Math.random() * 40
       ] as [number, number, number],
-      scale: 8 + Math.random() * 12,
+      scale: 6 + Math.random() * 8, // Reduced complexity by making clouds larger but fewer
       rotation: Math.random() * Math.PI * 2,
-      speed: 0.02 + Math.random() * 0.03
+      speed: 0.01 + Math.random() * 0.02 // Reduced movement speed
     }));
   }, []);
 
@@ -202,9 +203,8 @@ function RealisticClouds() {
     cloudRefs.current.forEach((cloud, i) => {
       if (cloud && cloud instanceof THREE.Group) {
         const config = cloudConfigs[i];
-        // Reduced movement calculations
-        cloud.position.x += Math.sin(time * 0.05) * config.speed * 0.1;
-        cloud.rotation.y = Math.sin(time * 0.025) * 0.1 + config.rotation;
+        cloud.position.x += Math.sin(time * 0.025) * config.speed * 0.1;
+        cloud.rotation.y = Math.sin(time * 0.015) * 0.1 + config.rotation;
       }
     });
   });
@@ -224,12 +224,12 @@ function RealisticClouds() {
         >
           <Cloud
             seed={i}
-            segments={30} // Reduced from 40
-            bounds={[5, 2, 1]}
-            volume={10}
-            opacity={0.85}
-            fade={1}
-            speed={0.3}
+            segments={20} // Reduced from 30
+            bounds={[4, 1.5, 1]}
+            volume={8}
+            opacity={0.75}
+            fade={0.8}
+            speed={0.2}
             color="#666666"
           />
         </group>
@@ -242,35 +242,44 @@ function Model() {
   const { scene } = useGLTF('/3DRENDER/DRONE.glb', true);
   const modelRef = useRef<THREE.Group>(null);
   const lastUpdateTime = useRef(0);
-  const updateInterval = 1000 / 60; // Target 60 FPS for movement updates
+  const updateInterval = 1000 / 30; // Reduced to 30 FPS for movement updates
 
   useEffect(() => {
-    scene.scale.set(1.5, 1.5, 1.5);
-    scene.position.y = 0;
-    scene.rotation.y = Math.PI;
+    if (scene) {
+      scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = false;
+          child.receiveShadow = false;
+        }
+      });
+      scene.scale.set(1.5, 1.5, 1.5);
+      scene.position.y = 0;
+      scene.rotation.y = Math.PI;
+    }
   }, [scene]);
 
   useFrame(({ clock }) => {
-    const currentTime = clock.getElapsedTime() * 1000; // Convert to milliseconds
+    const currentTime = clock.getElapsedTime() * 1000;
     if (currentTime - lastUpdateTime.current >= updateInterval) {
       if (modelRef.current) {
         const time = clock.getElapsedTime();
         
-        // Smoother movement with lerping
-        const targetY = Math.sin(time * 2) * 0.15;
-        const targetX = Math.sin(time * 1.5) * 0.1;
-        const targetZ = Math.sin(time * 1.8) * 0.05;
+        // Smoother movement with reduced frequency
+        const targetY = Math.sin(time * 1.5) * 0.15;
+        const targetX = Math.sin(time * 1.2) * 0.1;
+        const targetZ = Math.sin(time * 1.4) * 0.05;
         
-        modelRef.current.position.y += (targetY - modelRef.current.position.y) * 0.1;
-        modelRef.current.position.x += (targetX - modelRef.current.position.x) * 0.1;
-        modelRef.current.position.z += (targetZ - modelRef.current.position.z) * 0.1;
+        modelRef.current.position.y += (targetY - modelRef.current.position.y) * 0.08;
+        modelRef.current.position.x += (targetX - modelRef.current.position.x) * 0.08;
+        modelRef.current.position.z += (targetZ - modelRef.current.position.z) * 0.08;
 
-        // Smoother rotation
-        modelRef.current.rotation.x += (Math.sin(time * 2.5) * 0.03 - modelRef.current.rotation.x) * 0.1;
-        modelRef.current.rotation.z += (Math.sin(time * 2) * 0.03 - modelRef.current.rotation.z) * 0.1;
-        modelRef.current.rotation.y = Math.PI + Math.sin(time * 1.5) * 0.02;
+        // Smoother rotation with reduced frequency
+        modelRef.current.rotation.x += (Math.sin(time * 2) * 0.03 - modelRef.current.rotation.x) * 0.08;
+        modelRef.current.rotation.z += (Math.sin(time * 1.5) * 0.03 - modelRef.current.rotation.z) * 0.08;
+        modelRef.current.rotation.y = Math.PI + Math.sin(time * 1.2) * 0.02;
+
+        lastUpdateTime.current = currentTime;
       }
-      lastUpdateTime.current = currentTime;
     }
   });
   
@@ -317,14 +326,19 @@ export default function DroneModel() {
       <Canvas
         camera={{ position: [0, -2, 4], fov: 30 }}
         gl={{ 
-          preserveDrawingBuffer: true,
-          antialias: true,
+          preserveDrawingBuffer: false,
+          antialias: window.devicePixelRatio === 1,
           alpha: false,
-          powerPreference: "high-performance"
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true,
         }}
         shadows={false}
-        dpr={Math.min(window.devicePixelRatio, 2)}
+        dpr={[1, 2]}
+        performance={{ min: 0.5 }}
       >
+        <AdaptiveDpr pixelated />
+        <AdaptiveEvents />
         <Suspense fallback={<Loader />}>
           <Background />
           <RealisticClouds />
