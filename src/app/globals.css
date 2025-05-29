@@ -1,13 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent: #3182ce;
+  --text-primary: #ffffff;
+  --text-secondary: #a0aec0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -22,5 +26,60 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Anduril-style button */
+.btn-primary {
+  @apply bg-blue-600 text-white px-6 py-3 rounded-none hover:bg-blue-700 transition-colors duration-200;
+}
+
+/* Anduril-style section headers */
+.section-header {
+  @apply text-4xl font-bold mb-8 tracking-tight;
+}
+
+/* Anduril-style grid layout */
+.grid-layout {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+}
+
+/* Anduril-style card */
+.card {
+  @apply bg-gray-900 p-6 hover:bg-gray-800 transition-colors duration-200;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Modern container */
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Hover effects */
+.hover-underline {
+  @apply relative;
+}
+
+.hover-underline::after {
+  @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300;
+}
+
+.hover-underline:hover::after {
+  @apply w-full;
+}
+
+/* Image treatments */
+.img-treatment {
+  @apply grayscale hover:grayscale-0 transition-all duration-500;
+}
+
+/* Text gradients */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600;
 }
