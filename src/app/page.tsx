@@ -73,17 +73,16 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Advanced Navigation Systems
-          </li>
+                </li>
                 <li className="flex items-center">
                   <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Multi-Modal Sensor Fusion
-          </li>
+                </li>
               </ul>
             </div>
             <div className="relative h-96 bg-gray-900">
-              {/* Placeholder for additional 3D model or image */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
             </div>
           </div>

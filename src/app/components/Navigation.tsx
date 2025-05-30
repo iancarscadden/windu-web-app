@@ -8,6 +8,11 @@ export default function Navigation() {
 
   const menuItems = [
     {
+      title: 'Global Takeover',
+      href: '/global-takeover',
+      description: 'Live drone operations map'
+    },
+    {
       title: 'Air',
       subItems: [
         {
@@ -36,7 +41,7 @@ export default function Navigation() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-custom">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold">
@@ -48,23 +53,34 @@ export default function Navigation() {
           <div className="hidden md:flex items-center space-x-8">
             {menuItems.map((item) => (
               <div key={item.title} className="relative group">
-                <button className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
-                  {item.title}
-                </button>
-                <div className="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-black bg-opacity-90 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-in-out">
-                  <div className="py-1">
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.name}
-                        href={subItem.href}
-                        className="block px-4 py-3 text-sm hover:bg-gray-900"
-                      >
-                        <span className="block text-white font-medium">{subItem.name}</span>
-                        <span className="block text-gray-400 text-xs mt-1">{subItem.description}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+                {item.href ? (
+                  <Link 
+                    href={item.href}
+                    className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium"
+                  >
+                    {item.title}
+                  </Link>
+                ) : (
+                  <>
+                    <button className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                      {item.title}
+                    </button>
+                    <div className="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-black bg-opacity-90 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-in-out">
+                      <div className="py-1">
+                        {item.subItems?.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className="block px-4 py-3 text-sm hover:bg-gray-900"
+                          >
+                            <span className="block text-white font-medium">{subItem.name}</span>
+                            <span className="block text-gray-400 text-xs mt-1">{subItem.description}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
             <Link 
@@ -102,21 +118,32 @@ export default function Navigation() {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {menuItems.map((item) => (
               <div key={item.title}>
-                <button className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">
-                  {item.title}
-                </button>
-                <div className="pl-4">
-                  {item.subItems.map((subItem) => (
-                    <Link
-                      key={subItem.name}
-                      href={subItem.href}
-                      className="block px-4 py-2"
-                    >
-                      <span className="block text-white font-medium">{subItem.name}</span>
-                      <span className="block text-gray-400 text-xs mt-1">{subItem.description}</span>
-                    </Link>
-                  ))}
-                </div>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium"
+                  >
+                    {item.title}
+                  </Link>
+                ) : (
+                  <>
+                    <button className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">
+                      {item.title}
+                    </button>
+                    <div className="pl-4">
+                      {item.subItems?.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.href}
+                          className="block px-4 py-2"
+                        >
+                          <span className="block text-white font-medium">{subItem.name}</span>
+                          <span className="block text-gray-400 text-xs mt-1">{subItem.description}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             ))}
             <Link
